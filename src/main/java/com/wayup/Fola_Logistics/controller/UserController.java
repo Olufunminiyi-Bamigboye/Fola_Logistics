@@ -2,10 +2,9 @@ package com.wayup.Fola_Logistics.controller;
 
 import com.wayup.Fola_Logistics.dto.request.UserRegistrationRequestDTO;
 import com.wayup.Fola_Logistics.dto.response.ApiResponse;
-import com.wayup.Fola_Logistics.entity.Customer;
 import com.wayup.Fola_Logistics.service.CustomerService;
 import com.wayup.Fola_Logistics.service.RiderService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
@@ -14,13 +13,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("api/v1/")
-@RequiredArgsConstructor
-public class UserController {
-    private final CustomerService customerService;
-    private final RiderService riderService;
+@RequestMapping("api/v1/users/")
 
-    @PostMapping("users")
+public class UserController {
+    @Autowired
+    private CustomerService customerService;
+
+    @Autowired
+    private RiderService riderService;
+
+    @PostMapping("register")
     public ResponseEntity<ApiResponse> registerUser(@RequestBody UserRegistrationRequestDTO userRegistrationRequestDTO) {
         if (userRegistrationRequestDTO.getRole() == null) {
             throw new RuntimeException("Role is required");

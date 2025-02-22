@@ -8,15 +8,17 @@ import com.wayup.Fola_Logistics.entity.PackageRequest;
 import com.wayup.Fola_Logistics.repository.CustomerRepository;
 import com.wayup.Fola_Logistics.repository.PackageRequestRepository;
 import com.wayup.Fola_Logistics.service.CustomerService;
-import lombok.RequiredArgsConstructor;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 
 @Service
-@RequiredArgsConstructor
 public class CustomerServiceImpl implements CustomerService {
-    private final CustomerRepository customerRepository;
-    private final PackageRequestRepository packageRequestRepository;
+    @Autowired
+    private CustomerRepository customerRepository;
+
+    @Autowired
+    private PackageRequestRepository packageRequestRepository;
 
     @Override
     public ApiResponse registerCustomer(UserRegistrationRequestDTO userRegistrationRequestDTO) {
@@ -27,15 +29,12 @@ public class CustomerServiceImpl implements CustomerService {
         Customer customer = new Customer();
         customer.setName(userRegistrationRequestDTO.getName());
         customer.setEmail(userRegistrationRequestDTO.getEmail());
+        customer.setPhoneNo(userRegistrationRequestDTO.getPhoneNo());
         customer.setRole(userRegistrationRequestDTO.getRole());
         customer.setLatitude(userRegistrationRequestDTO.getLatitude());
         customer.setLongitude(userRegistrationRequestDTO.getLongitude());
         Customer newlyRegisteredCustomer = customerRepository.save(customer);
-        return ApiResponse.builder()
-                .error(false)
-                .message("Account created successfully")
-                .data(newlyRegisteredCustomer)
-                .build();
+        return new ApiResponse(false, "Account created successfully", newlyRegisteredCustomer);
     }
 
     @Override
@@ -53,9 +52,6 @@ public class CustomerServiceImpl implements CustomerService {
 
         packageRequestRepository.save(request);
 
-        return ApiResponse.builder()
-                .error(false)
-                .message("Package request successfully created! Waiting for a rider to pick")
-                .build();
+        return new ApiResponse(false, "Package request successfully created! Waiting for a rider to pick", request);
     }
 }

@@ -3,7 +3,9 @@ package com.wayup.Fola_Logistics.entity;
 import jakarta.persistence.*;
 import lombok.Data;
 
-@Data
+import java.util.Objects;
+
+
 @Entity
 @Table(name = "package-request")
 public class PackageRequest {
@@ -27,6 +29,112 @@ public class PackageRequest {
 
     @Enumerated(EnumType.STRING)
     private Status status;
+
+    public PackageRequest(Customer customer, Rider rider, String itemName, double pickUpLatitude, double pickUpLongitude, double dropOffLatitude, double dropOffLongitude, Status status) {
+        this.customer = customer;
+        this.rider = rider;
+        this.itemName = itemName;
+        this.pickUpLatitude = pickUpLatitude;
+        this.pickUpLongitude = pickUpLongitude;
+        this.dropOffLatitude = dropOffLatitude;
+        this.dropOffLongitude = dropOffLongitude;
+        this.status = status;
+    }
+
+    public PackageRequest() {
+
+    }
+
+    public Customer getCustomer() {
+        return customer;
+    }
+
+    public void setCustomer(Customer customer) {
+        this.customer = customer;
+    }
+
+    public Rider getRider() {
+        return rider;
+    }
+
+    public void setRider(Rider rider) {
+        this.rider = rider;
+    }
+
+    public String getItemName() {
+        return itemName;
+    }
+
+    public void setItemName(String itemName) {
+        this.itemName = itemName;
+    }
+
+    public double getPickUpLatitude() {
+        return pickUpLatitude;
+    }
+
+    public void setPickUpLatitude(double pickUpLatitude) {
+        this.pickUpLatitude = pickUpLatitude;
+    }
+
+    public double getPickUpLongitude() {
+        return pickUpLongitude;
+    }
+
+    public void setPickUpLongitude(double pickUpLongitude) {
+        this.pickUpLongitude = pickUpLongitude;
+    }
+
+    public double getDropOffLatitude() {
+        return dropOffLatitude;
+    }
+
+    public void setDropOffLatitude(double dropOffLatitude) {
+        this.dropOffLatitude = dropOffLatitude;
+    }
+
+    public double getDropOffLongitude() {
+        return dropOffLongitude;
+    }
+
+    public void setDropOffLongitude(double dropOffLongitude) {
+        this.dropOffLongitude = dropOffLongitude;
+    }
+
+    public Status getStatus() {
+        return status;
+    }
+
+    public void setStatus(Status status) {
+        this.status = status;
+    }
+
+    @Override
+    public boolean equals(Object o) {
+        if (o == null || getClass() != o.getClass()) return false;
+        PackageRequest request = (PackageRequest) o;
+        return Double.compare(pickUpLatitude, request.pickUpLatitude) == 0 && Double.compare(pickUpLongitude, request.pickUpLongitude) == 0 && Double.compare(dropOffLatitude, request.dropOffLatitude) == 0 && Double.compare(dropOffLongitude, request.dropOffLongitude) == 0 && Objects.equals(id, request.id) && Objects.equals(customer, request.customer) && Objects.equals(rider, request.rider) && Objects.equals(itemName, request.itemName) && status == request.status;
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(id, customer, rider, itemName, pickUpLatitude, pickUpLongitude, dropOffLatitude, dropOffLongitude, status);
+    }
+
+    @Override
+    public String toString() {
+        return "PackageRequest{" +
+                "id=" + id +
+                ", customer=" + customer +
+                ", rider=" + rider +
+                ", itemName='" + itemName + '\'' +
+                ", pickUpLatitude=" + pickUpLatitude +
+                ", pickUpLongitude=" + pickUpLongitude +
+                ", dropOffLatitude=" + dropOffLatitude +
+                ", dropOffLongitude=" + dropOffLongitude +
+                ", status=" + status +
+                '}';
+    }
 
     public enum Status {
         REQUESTED, PICKED_UP, IN_TRANSIT, DELIVERED

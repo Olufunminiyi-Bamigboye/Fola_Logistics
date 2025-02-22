@@ -8,5 +8,6 @@ import java.util.List;
 
 public interface RiderService {
     ApiResponse registerRider(UserRegistrationRequestDTO userRegistrationRequestDTO);
-    List<PackageRequest> getAvailableRequests(Long riderId);
+    ApiResponse getAvailableRequests(Long riderId);
+    ApiResponse acceptPackageRequest(Long riderId, Long requestId);
 }
