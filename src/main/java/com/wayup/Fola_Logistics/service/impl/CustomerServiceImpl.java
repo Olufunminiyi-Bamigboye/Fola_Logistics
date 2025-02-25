@@ -48,6 +48,8 @@ public class CustomerServiceImpl implements CustomerService {
         request.setPickUpLongitude(packageRequestDTO.getPickUpLongitude());
         request.setDropOffLatitude(packageRequestDTO.getDropOffLatitude());
         request.setDropOffLongitude(packageRequestDTO.getDropOffLongitude());
+        request.setRecipient(packageRequestDTO.getRecipient());
+        request.setRecipientEmail(packageRequestDTO.getRecipientEmail());
         request.setStatus(PackageRequest.Status.REQUESTED);
 
         packageRequestRepository.save(request);

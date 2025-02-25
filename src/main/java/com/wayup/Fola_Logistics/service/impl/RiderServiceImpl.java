@@ -2,20 +2,19 @@ package com.wayup.Fola_Logistics.service.impl;
 
 import com.wayup.Fola_Logistics.dto.request.UserRegistrationRequestDTO;
 import com.wayup.Fola_Logistics.dto.response.ApiResponse;
-import com.wayup.Fola_Logistics.entity.Customer;
 import com.wayup.Fola_Logistics.entity.PackageRequest;
 import com.wayup.Fola_Logistics.entity.Rider;
-import com.wayup.Fola_Logistics.repository.CustomerRepository;
 import com.wayup.Fola_Logistics.repository.PackageRequestRepository;
 import com.wayup.Fola_Logistics.repository.RiderRepository;
-import com.wayup.Fola_Logistics.service.CustomerService;
 import com.wayup.Fola_Logistics.service.LocationService;
+import com.wayup.Fola_Logistics.service.NotificationService;
 import com.wayup.Fola_Logistics.service.RiderService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.scheduling.annotation.Scheduled;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 @Service
@@ -27,6 +26,9 @@ public class RiderServiceImpl implements RiderService {
     private PackageRequestRepository packageRequestRepository;
     @Autowired
     private LocationService locationService;
+
+    @Autowired
+    private NotificationService notificationService;
 
     @Override
     public ApiResponse registerRider(UserRegistrationRequestDTO userRegistrationRequestDTO) {
@@ -71,11 +73,38 @@ public class RiderServiceImpl implements RiderService {
 
         request.setRider(rider);
         request.setStatus(PackageRequest.Status.PICKED_UP);
-        packageRequestRepository.save(request);
+        PackageRequest persistedRequest = packageRequestRepository.save(request);
+        if (persistedRequest.getStatus() == PackageRequest.Status.PICKED_UP) {
+            PackageRequest notifyRecipientAboutPackage = notifyRecipientAboutPackage();
+        }
 
         rider.setAvailable(false);
         riderRepository.save(rider);
 
         return new ApiResponse(false, "Package accepted successfully", null);
     }
+
+    @Scheduled(cron = "0 39 17 * * ?")
+    public PackageRequest notifyRecipientAboutPackage(){
+        List<PackageRequest> acceptedRequestList = packageRequestRepository.findAcceptedRequest();
+
+        for (PackageRequest request : acceptedRequestList) {
+            notificationService.sendNotification(
+                    request.getRecipientEmail(),
+                    "Delivery Notification",
+                    "Your package from " + request.getCustomer().getName() +
+                            " is about to be delivered by " + request.getRider().getName() + ".\n Your delivery confirmation PIN is: " +
+                            generatePin()
+            );
+
+            System.out.println("mail successfully sent out");
+        }
+
+        return null;
+    }
+    public static String generatePin(){
+        Random random = new Random();
+        String pin = String.format("%04d", random.nextInt(10000));
+        return pin;
+   }
 }

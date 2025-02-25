@@ -26,6 +26,8 @@ public class PackageRequest {
     private double pickUpLongitude;
     private double dropOffLatitude;
     private double dropOffLongitude;
+    private String recipient;
+    private String recipientEmail;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -107,6 +109,22 @@ public class PackageRequest {
 
     public void setStatus(Status status) {
         this.status = status;
+    }
+
+    public String getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
+    }
+
+    public String getRecipientEmail() {
+        return recipientEmail;
+    }
+
+    public void setRecipientEmail(String recipientEmail) {
+        this.recipientEmail = recipientEmail;
     }
 
     @Override

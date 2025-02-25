@@ -9,6 +9,8 @@ public class PackageRequestDTO {
     private double pickUpLongitude;
     private double dropOffLatitude;
     private double dropOffLongitude;
+    private String recipient;
+    private String recipientEmail;
 
     public String getItemName() {
         return itemName;
@@ -48,5 +50,21 @@ public class PackageRequestDTO {
 
     public void setDropOffLongitude(double dropOffLongitude) {
         this.dropOffLongitude = dropOffLongitude;
+    }
+
+    public String getRecipient() {
+        return recipient;
+    }
+
+    public void setRecipient(String recipient) {
+        this.recipient = recipient;
+    }
+
+    public String getRecipientEmail() {
+        return recipientEmail;
+    }
+
+    public void setRecipientEmail(String recipientEmail) {
+        this.recipientEmail = recipientEmail;
     }
 }
