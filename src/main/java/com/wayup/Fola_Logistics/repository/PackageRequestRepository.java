@@ -12,6 +12,9 @@ import java.util.List;
 public interface PackageRequestRepository extends JpaRepository<PackageRequest, Long> {
     List<PackageRequest> findByStatus (PackageRequest.Status status );
 
+    List<PackageRequest> findByPin (Long pin );
+    boolean existsByPin (Long pin );
+
     @Query("SELECT c FROM PackageRequest c WHERE c.status ='PICKED_UP'")
     List<PackageRequest> findAcceptedRequest();
 }

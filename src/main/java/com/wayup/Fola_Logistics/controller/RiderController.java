@@ -24,4 +24,9 @@ public class RiderController {
     public ResponseEntity<ApiResponse> acceptRequest(@PathVariable Long riderId, @PathVariable Long requestId) {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(riderService.acceptPackageRequest(riderId, requestId));
     }
+
+    @PutMapping("{riderId}/delivery/{requestId}/confirm-pin")
+    public ResponseEntity<ApiResponse> confirmDelivery(@PathVariable Long riderId, @PathVariable Long requestId, @RequestParam Long deliveryPin) {
+        return ResponseEntity.status(HttpStatus.OK).body(riderService.confirmPackageDelivery(riderId, requestId, deliveryPin));
+    }
 }

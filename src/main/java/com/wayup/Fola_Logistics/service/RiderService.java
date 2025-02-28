@@ -10,4 +10,6 @@ public interface RiderService {
     ApiResponse registerRider(UserRegistrationRequestDTO userRegistrationRequestDTO);
     ApiResponse getAvailableRequests(Long riderId);
     ApiResponse acceptPackageRequest(Long riderId, Long requestId);
+    ApiResponse confirmPackageDelivery(Long riderId, Long requestId, Long deliveryPin);
+
 }

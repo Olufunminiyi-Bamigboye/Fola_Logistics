@@ -28,6 +28,7 @@ public class PackageRequest {
     private double dropOffLongitude;
     private String recipient;
     private String recipientEmail;
+    private Long pin;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -40,7 +41,9 @@ public class PackageRequest {
         this.pickUpLongitude = pickUpLongitude;
         this.dropOffLatitude = dropOffLatitude;
         this.dropOffLongitude = dropOffLongitude;
+        this.pin = pin;
         this.status = status;
+
     }
 
     public PackageRequest() {
@@ -107,6 +110,14 @@ public class PackageRequest {
         return status;
     }
 
+    public Long getPin() {
+        return pin;
+    }
+
+    public void setPin(Long pin) {
+        this.pin = pin;
+    }
+
     public void setStatus(Status status) {
         this.status = status;
     }
@@ -131,12 +142,12 @@ public class PackageRequest {
     public boolean equals(Object o) {
         if (o == null || getClass() != o.getClass()) return false;
         PackageRequest request = (PackageRequest) o;
-        return Double.compare(pickUpLatitude, request.pickUpLatitude) == 0 && Double.compare(pickUpLongitude, request.pickUpLongitude) == 0 && Double.compare(dropOffLatitude, request.dropOffLatitude) == 0 && Double.compare(dropOffLongitude, request.dropOffLongitude) == 0 && Objects.equals(id, request.id) && Objects.equals(customer, request.customer) && Objects.equals(rider, request.rider) && Objects.equals(itemName, request.itemName) && status == request.status;
+        return Double.compare(pickUpLatitude, request.pickUpLatitude) == 0 && Double.compare(pickUpLongitude, request.pickUpLongitude) == 0 && Double.compare(dropOffLatitude, request.dropOffLatitude) == 0 && Double.compare(dropOffLongitude, request.dropOffLongitude) == 0 && Objects.equals(id, request.id) && Objects.equals(customer, request.customer) && Objects.equals(rider, request.rider) && Objects.equals(itemName, request.itemName) && Objects.equals(recipient, request.recipient) && Objects.equals(recipientEmail, request.recipientEmail) && Objects.equals(pin, request.pin) && status == request.status;
     }
 
     @Override
     public int hashCode() {
-        return Objects.hash(id, customer, rider, itemName, pickUpLatitude, pickUpLongitude, dropOffLatitude, dropOffLongitude, status);
+        return Objects.hash(id, customer, rider, itemName, pickUpLatitude, pickUpLongitude, dropOffLatitude, dropOffLongitude, recipient, recipientEmail, pin, status);
     }
 
     @Override
@@ -150,6 +161,9 @@ public class PackageRequest {
                 ", pickUpLongitude=" + pickUpLongitude +
                 ", dropOffLatitude=" + dropOffLatitude +
                 ", dropOffLongitude=" + dropOffLongitude +
+                ", recipient='" + recipient + '\'' +
+                ", recipientEmail='" + recipientEmail + '\'' +
+                ", pin=" + pin +
                 ", status=" + status +
                 '}';
     }

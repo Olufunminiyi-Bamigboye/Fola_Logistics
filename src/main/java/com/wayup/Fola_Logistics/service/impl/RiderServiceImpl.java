@@ -76,6 +76,7 @@ public class RiderServiceImpl implements RiderService {
         PackageRequest persistedRequest = packageRequestRepository.save(request);
         if (persistedRequest.getStatus() == PackageRequest.Status.PICKED_UP) {
             PackageRequest notifyRecipientAboutPackage = notifyRecipientAboutPackage();
+            packageRequestRepository.save(notifyRecipientAboutPackage);
         }
 
         rider.setAvailable(false);
@@ -84,27 +85,50 @@ public class RiderServiceImpl implements RiderService {
         return new ApiResponse(false, "Package accepted successfully", null);
     }
 
-    @Scheduled(cron = "0 39 17 * * ?")
+    public ApiResponse confirmPackageDelivery(Long riderId, Long requestId, Long deliveryPin) {
+        Rider rider = riderRepository.findById(riderId).orElseThrow(() -> new RuntimeException("Rider not found"));
+        PackageRequest request = packageRequestRepository.findById(requestId).orElseThrow(() -> new RuntimeException("Request not found"));
+
+        if (packageRequestRepository.existsByPin(deliveryPin)) {
+            request.setStatus(PackageRequest.Status.DELIVERED);
+            PackageRequest savedDeliveryRequest = packageRequestRepository.save(request);
+
+            rider.setAvailable(true);
+            rider.setLatitude(request.getDropOffLatitude());
+            rider.setLongitude(request.getDropOffLongitude());
+            riderRepository.save(rider);
+
+            return new ApiResponse<>(false, "Package delivered successfully", null);
+        }
+
+        throw new RuntimeException("Package delivery pin not found");
+
+    }
+
+
+    @Scheduled(cron = "0 25 11 * * ?")
     public PackageRequest notifyRecipientAboutPackage(){
         List<PackageRequest> acceptedRequestList = packageRequestRepository.findAcceptedRequest();
 
         for (PackageRequest request : acceptedRequestList) {
+            String requestDeliveryPin = generatePin();
+            request.setPin(Long.valueOf((requestDeliveryPin)));
+            packageRequestRepository.save(request);
+
             notificationService.sendNotification(
                     request.getRecipientEmail(),
                     "Delivery Notification",
                     "Your package from " + request.getCustomer().getName() +
                             " is about to be delivered by " + request.getRider().getName() + ".\n Your delivery confirmation PIN is: " +
-                            generatePin()
+                            requestDeliveryPin + ". Kindly provide this PIN to the driver upon arrival."
             );
-
             System.out.println("mail successfully sent out");
         }
-
         return null;
     }
     public static String generatePin(){
         Random random = new Random();
-        String pin = String.format("%04d", random.nextInt(10000));
-        return pin;
+        String confirmationPin = String.format("%04d", random.nextInt(10000));
+        return confirmationPin;
    }
 }
