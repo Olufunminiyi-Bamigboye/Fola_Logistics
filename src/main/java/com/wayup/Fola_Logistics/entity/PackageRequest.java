@@ -14,7 +14,7 @@ public class PackageRequest {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id")
+    @JoinColumn(name = "customer_id", nullable = true)
     private Customer customer;
 
     @ManyToOne
@@ -28,7 +28,7 @@ public class PackageRequest {
     private double dropOffLongitude;
     private String recipient;
     private String recipientEmail;
-    private Long pin;
+    private String pin;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -48,6 +48,10 @@ public class PackageRequest {
 
     public PackageRequest() {
 
+    }
+
+    public PackageRequest(String pin) {
+        this.pin = pin;
     }
 
     public Customer getCustomer() {
@@ -110,11 +114,11 @@ public class PackageRequest {
         return status;
     }
 
-    public Long getPin() {
+    public String getPin() {
         return pin;
     }
 
-    public void setPin(Long pin) {
+    public void setPin(String pin) {
         this.pin = pin;
     }
 

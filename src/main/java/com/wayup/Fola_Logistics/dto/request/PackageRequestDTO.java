@@ -67,4 +67,5 @@ public class PackageRequestDTO {
     public void setRecipientEmail(String recipientEmail) {
         this.recipientEmail = recipientEmail;
     }
+
 }

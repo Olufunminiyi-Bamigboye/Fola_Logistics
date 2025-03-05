@@ -11,6 +11,8 @@ import com.wayup.Fola_Logistics.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Random;
+
 
 @Service
 public class CustomerServiceImpl implements CustomerService {
@@ -50,10 +52,17 @@ public class CustomerServiceImpl implements CustomerService {
         request.setDropOffLongitude(packageRequestDTO.getDropOffLongitude());
         request.setRecipient(packageRequestDTO.getRecipient());
         request.setRecipientEmail(packageRequestDTO.getRecipientEmail());
+        request.setPin(generatePin());
         request.setStatus(PackageRequest.Status.REQUESTED);
 
         packageRequestRepository.save(request);
 
         return new ApiResponse(false, "Package request successfully created! Waiting for a rider to pick", request);
+    }
+
+    public static String generatePin(){
+        Random random = new Random();
+        String confirmationPin = String.format("%04d", random.nextInt(10000));
+        return confirmationPin;
     }
 }

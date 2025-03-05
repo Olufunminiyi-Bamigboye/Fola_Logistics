@@ -1,8 +1,8 @@
 package com.wayup.Fola_Logistics.controller;
 
+import com.wayup.Fola_Logistics.dto.request.PinRequest;
 import com.wayup.Fola_Logistics.dto.response.ApiResponse;
 import com.wayup.Fola_Logistics.service.RiderService;
-import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -25,8 +25,8 @@ public class RiderController {
         return ResponseEntity.status(HttpStatus.ACCEPTED).body(riderService.acceptPackageRequest(riderId, requestId));
     }
 
-    @PutMapping("{riderId}/delivery/{requestId}/confirm-pin")
-    public ResponseEntity<ApiResponse> confirmDelivery(@PathVariable Long riderId, @PathVariable Long requestId, @RequestParam Long deliveryPin) {
-        return ResponseEntity.status(HttpStatus.OK).body(riderService.confirmPackageDelivery(riderId, requestId, deliveryPin));
+    @PostMapping("{riderId}/delivery/{requestId}/confirm-pin")
+    public ResponseEntity<ApiResponse> confirmDelivery(@PathVariable Long riderId, @PathVariable Long requestId, @RequestBody PinRequest pinRequest) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(riderService.confirmPackageDelivery(riderId, requestId, pinRequest));
     }
 }
