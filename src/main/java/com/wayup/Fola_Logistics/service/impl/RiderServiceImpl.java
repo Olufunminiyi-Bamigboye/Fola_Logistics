@@ -100,7 +100,6 @@ public class RiderServiceImpl implements RiderService {
                 packageRequest.setStatus(PackageRequest.Status.DELIVERED);
                 packageRequestRepository.save(packageRequest);
         }
-
             rider.setAvailable(true);
             rider.setLatitude(packageRequest.getDropOffLatitude());
             rider.setLongitude(packageRequest.getDropOffLongitude());

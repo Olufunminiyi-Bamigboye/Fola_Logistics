@@ -19,4 +19,9 @@ public class CustomerController {
     public ResponseEntity<ApiResponse> requestPackage(@PathVariable Long customerId, @RequestBody PackageRequestDTO packageRequestDTO) {
         return ResponseEntity.status(HttpStatus.CREATED).body(customerService.createPackageRequest(customerId, packageRequestDTO));
     }
+
+    @PostMapping("{customerId}/cancel-request/{packageId}")
+    public ResponseEntity<ApiResponse> cancelRequest(@PathVariable Long customerId, @PathVariable Long packageId) {
+        return ResponseEntity.status(HttpStatus.ACCEPTED).body(customerService.cancelPackageRequest(customerId, packageId));
+    }
 }

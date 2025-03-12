@@ -7,4 +7,5 @@ import com.wayup.Fola_Logistics.dto.response.ApiResponse;
 public interface   CustomerService {
     ApiResponse registerCustomer(UserRegistrationRequestDTO userRegistrationRequestDTO);
     ApiResponse createPackageRequest(Long customerId, PackageRequestDTO packageRequestDTO);
+    ApiResponse cancelPackageRequest(Long customerId, Long packageId);
 }

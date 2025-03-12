@@ -173,6 +173,6 @@ public class PackageRequest {
     }
 
     public enum Status {
-        REQUESTED, PICKED_UP, IN_TRANSIT, DELIVERED
+        REQUESTED, PICKED_UP, DELIVERED, CANCELLED
     }
 }

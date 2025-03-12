@@ -11,6 +11,7 @@ import com.wayup.Fola_Logistics.service.CustomerService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.util.Optional;
 import java.util.Random;
 
 
@@ -59,6 +60,29 @@ public class CustomerServiceImpl implements CustomerService {
 
         return new ApiResponse(false, "Package request successfully created! Waiting for a rider to pick", request);
     }
+
+    @Override
+    public ApiResponse cancelPackageRequest(Long customerId, Long packageId) {
+        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
+        Optional<PackageRequest> request = packageRequestRepository.findById(packageId);
+        if (request.isPresent()) {
+            PackageRequest packageRequest = request.get();
+            if (packageRequest.getStatus() == PackageRequest.Status.PICKED_UP) {
+                throw new RuntimeException("This package has been picked up already, kindly apply for a return when it gets delivered");
+            } else if (packageRequest.getStatus() == PackageRequest.Status.DELIVERED) {
+                throw new RuntimeException("This package is already delivered, kindly apply for return");
+            } else if (packageRequest.getStatus() == PackageRequest.Status.CANCELLED) {
+                throw new RuntimeException("This package has been cancelled, kindly apply for return");
+            } else {
+                packageRequest.setStatus(PackageRequest.Status.CANCELLED);
+                packageRequestRepository.save(packageRequest);
+
+                return new ApiResponse<>(false, "Package request cancelled", packageRequest);
+            }
+        }
+        throw new RuntimeException("Package request not found");
+    }
+
 
     public static String generatePin(){
         Random random = new Random();
