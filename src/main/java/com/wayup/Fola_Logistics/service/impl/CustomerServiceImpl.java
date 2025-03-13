@@ -5,6 +5,9 @@ import com.wayup.Fola_Logistics.dto.request.UserRegistrationRequestDTO;
 import com.wayup.Fola_Logistics.dto.response.ApiResponse;
 import com.wayup.Fola_Logistics.entity.Customer;
 import com.wayup.Fola_Logistics.entity.PackageRequest;
+import com.wayup.Fola_Logistics.exception.ExistingEmailException;
+import com.wayup.Fola_Logistics.exception.InvalidRequestException;
+import com.wayup.Fola_Logistics.exception.UserNotFoundException;
 import com.wayup.Fola_Logistics.repository.CustomerRepository;
 import com.wayup.Fola_Logistics.repository.PackageRequestRepository;
 import com.wayup.Fola_Logistics.service.CustomerService;
@@ -24,9 +27,9 @@ public class CustomerServiceImpl implements CustomerService {
     private PackageRequestRepository packageRequestRepository;
 
     @Override
-    public ApiResponse registerCustomer(UserRegistrationRequestDTO userRegistrationRequestDTO) {
+    public ApiResponse registerCustomer(UserRegistrationRequestDTO userRegistrationRequestDTO) throws ExistingEmailException {
         if(customerRepository.existsByEmail(userRegistrationRequestDTO.getEmail())) {
-            throw new RuntimeException("Email already in use");
+            throw new ExistingEmailException("Email already in use");
         }
 
         Customer customer = new Customer();
@@ -41,8 +44,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public ApiResponse createPackageRequest(Long customerId, PackageRequestDTO packageRequestDTO) {
-        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
+    public ApiResponse createPackageRequest(Long customerId, PackageRequestDTO packageRequestDTO) throws UserNotFoundException {
+        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new UserNotFoundException("Customer not found"));
 
         PackageRequest request = new PackageRequest();
         request.setCustomer(customer);
@@ -62,8 +65,8 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
     @Override
-    public ApiResponse cancelPackageRequest(Long customerId, Long packageId) {
-        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new RuntimeException("Customer not found"));
+    public ApiResponse cancelPackageRequest(Long customerId, Long packageId) throws UserNotFoundException, InvalidRequestException {
+        Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new UserNotFoundException("Customer not found"));
         Optional<PackageRequest> request = packageRequestRepository.findById(packageId);
         if (request.isPresent()) {
             PackageRequest packageRequest = request.get();
@@ -80,7 +83,7 @@ public class CustomerServiceImpl implements CustomerService {
                 return new ApiResponse<>(false, "Package request cancelled", packageRequest);
             }
         }
-        throw new RuntimeException("Package request not found");
+        throw new InvalidRequestException("Package request not found");
     }
 
 

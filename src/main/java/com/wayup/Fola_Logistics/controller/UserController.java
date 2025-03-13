@@ -2,6 +2,9 @@ package com.wayup.Fola_Logistics.controller;
 
 import com.wayup.Fola_Logistics.dto.request.UserRegistrationRequestDTO;
 import com.wayup.Fola_Logistics.dto.response.ApiResponse;
+import com.wayup.Fola_Logistics.exception.ExistingEmailException;
+import com.wayup.Fola_Logistics.exception.InvalidRequestException;
+import com.wayup.Fola_Logistics.exception.UserNotFoundException;
 import com.wayup.Fola_Logistics.service.CustomerService;
 import com.wayup.Fola_Logistics.service.RiderService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -23,9 +26,9 @@ public class UserController {
     private RiderService riderService;
 
     @PostMapping("register")
-    public ResponseEntity<ApiResponse> registerUser(@RequestBody UserRegistrationRequestDTO userRegistrationRequestDTO) {
+    public ResponseEntity<ApiResponse> registerUser(@RequestBody UserRegistrationRequestDTO userRegistrationRequestDTO) throws InvalidRequestException, ExistingEmailException {
         if (userRegistrationRequestDTO.getRole() == null) {
-            throw new RuntimeException("Role is required");
+            throw new InvalidRequestException("Role is required");
         }
         return switch (userRegistrationRequestDTO.getRole()) {
             case CUSTOMER -> ResponseEntity.status(HttpStatus.CREATED).body(customerService.registerCustomer(userRegistrationRequestDTO));
