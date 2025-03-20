@@ -14,6 +14,7 @@ public class UserRegistrationRequestDTO {
     private double latitude;
     private double longitude;
 
+
     public String getName() {
         return name;
     }

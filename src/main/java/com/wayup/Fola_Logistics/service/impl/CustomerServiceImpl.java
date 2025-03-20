@@ -11,6 +11,7 @@ import com.wayup.Fola_Logistics.exception.UserNotFoundException;
 import com.wayup.Fola_Logistics.repository.CustomerRepository;
 import com.wayup.Fola_Logistics.repository.PackageRequestRepository;
 import com.wayup.Fola_Logistics.service.CustomerService;
+import com.wayup.Fola_Logistics.service.GeocodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private PackageRequestRepository packageRequestRepository;
+
+    @Autowired
+    private GeocodeService geocodeService;
 
     @Override
     public ApiResponse registerCustomer(UserRegistrationRequestDTO userRegistrationRequestDTO) throws ExistingEmailException {
@@ -50,10 +54,10 @@ public class CustomerServiceImpl implements CustomerService {
         PackageRequest request = new PackageRequest();
         request.setCustomer(customer);
         request.setItemName(packageRequestDTO.getItemName());
-        request.setPickUpLatitude(packageRequestDTO.getPickUpLatitude());
-        request.setPickUpLongitude(packageRequestDTO.getPickUpLongitude());
-        request.setDropOffLatitude(packageRequestDTO.getDropOffLatitude());
-        request.setDropOffLongitude(packageRequestDTO.getDropOffLongitude());
+        request.setPickUpLatitude(geocodeService.getGeocodeAddress(packageRequestDTO.getPickUpAddress()).getLatitude());
+        request.setPickUpLongitude(geocodeService.getGeocodeAddress(packageRequestDTO.getPickUpAddress()).getLongitude());
+        request.setDropOffLatitude(geocodeService.getGeocodeAddress(packageRequestDTO.getDropOffAddress()).getLatitude());
+        request.setDropOffLatitude(geocodeService.getGeocodeAddress(packageRequestDTO.getDropOffAddress()).getLongitude());
         request.setRecipient(packageRequestDTO.getRecipient());
         request.setRecipientEmail(packageRequestDTO.getRecipientEmail());
         request.setPin(generatePin());

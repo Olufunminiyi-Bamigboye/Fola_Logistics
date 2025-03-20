@@ -10,6 +10,7 @@ import com.wayup.Fola_Logistics.exception.InvalidRequestException;
 import com.wayup.Fola_Logistics.exception.UserNotFoundException;
 import com.wayup.Fola_Logistics.repository.PackageRequestRepository;
 import com.wayup.Fola_Logistics.repository.RiderRepository;
+import com.wayup.Fola_Logistics.service.GeocodeService;
 import com.wayup.Fola_Logistics.service.LocationService;
 import com.wayup.Fola_Logistics.service.NotificationService;
 import com.wayup.Fola_Logistics.service.RiderService;
@@ -33,11 +34,13 @@ public class RiderServiceImpl implements RiderService {
     @Autowired
     private NotificationService notificationService;
 
+    @Autowired
+    private GeocodeService geocodeService;
 
 
     @Override
     public ApiResponse registerRider(UserRegistrationRequestDTO userRegistrationRequestDTO) throws ExistingEmailException {
-        if(riderRepository.existsByEmail(userRegistrationRequestDTO.getEmail())) {
+        if (riderRepository.existsByEmail(userRegistrationRequestDTO.getEmail())) {
             throw new ExistingEmailException("Email already in use");
         }
 
@@ -55,8 +58,10 @@ public class RiderServiceImpl implements RiderService {
     @Override
     public ApiResponse getAvailableRequests(Long riderId) throws UserNotFoundException {
         Rider rider = riderRepository.findById(riderId).orElseThrow(() -> new UserNotFoundException("Rider not found"));
+        List<PackageRequest> packageRequests = packageRequestRepository.findByStatus(PackageRequest.Status.REQUESTED);
 
-        List<PackageRequest> packageRequests = packageRequestRepository.findByStatus(PackageRequest.Status.REQUESTED).stream()
+
+        List<PackageRequest> PackageRequests = packageRequestRepository.findByStatus(PackageRequest.Status.REQUESTED).stream()
                 .filter(request -> locationService.calculateDistance(
                         rider.getLatitude(),
                         rider.getLongitude(),
@@ -66,6 +71,7 @@ public class RiderServiceImpl implements RiderService {
 
         return new ApiResponse(false, "Available package request nearby", packageRequests);
     }
+
 
     @Override
     public ApiResponse acceptPackageRequest(Long riderId, Long requestId) throws UserNotFoundException {
@@ -97,12 +103,12 @@ public class RiderServiceImpl implements RiderService {
     public ApiResponse confirmPackageDelivery(Long riderId, Long requestId, PinRequest pinRequest) throws UserNotFoundException, InvalidRequestException {
         Rider rider = riderRepository.findById(riderId).orElseThrow(() -> new UserNotFoundException("Rider not found"));
         Optional<PackageRequest> request = packageRequestRepository.findById(requestId);
-        if (request.isPresent()){
+        if (request.isPresent()) {
             PackageRequest packageRequest = request.get();
             if (pinRequest.getDeliveryPin().equals(packageRequest.getPin())) {
                 packageRequest.setStatus(PackageRequest.Status.DELIVERED);
                 packageRequestRepository.save(packageRequest);
-        }
+            }
             rider.setAvailable(true);
             rider.setLatitude(packageRequest.getDropOffLatitude());
             rider.setLongitude(packageRequest.getDropOffLongitude());
@@ -111,6 +117,6 @@ public class RiderServiceImpl implements RiderService {
             return new ApiResponse<>(false, "Package delivered successfully", null);
         }
         throw new InvalidRequestException("Package delivery pin provided does not match ");
-        }
     }
+}
 

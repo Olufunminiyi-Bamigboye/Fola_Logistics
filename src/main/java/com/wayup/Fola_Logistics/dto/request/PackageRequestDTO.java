@@ -5,10 +5,8 @@ import lombok.Data;
 @Data
 public class PackageRequestDTO {
     private String itemName;
-    private double pickUpLatitude;
-    private double pickUpLongitude;
-    private double dropOffLatitude;
-    private double dropOffLongitude;
+    private String pickUpAddress;
+    private String dropOffAddress;
     private String recipient;
     private String recipientEmail;
 
@@ -20,36 +18,16 @@ public class PackageRequestDTO {
         this.itemName = itemName;
     }
 
-    public double getPickUpLatitude() {
-        return pickUpLatitude;
+    public String getPickUpAddress() {
+        return pickUpAddress;
     }
 
-    public void setPickUpLatitude(double pickUpLatitude) {
-        this.pickUpLatitude = pickUpLatitude;
+    public String getDropOffAddress() {
+        return dropOffAddress;
     }
 
-    public double getPickUpLongitude() {
-        return pickUpLongitude;
-    }
-
-    public void setPickUpLongitude(double pickUpLongitude) {
-        this.pickUpLongitude = pickUpLongitude;
-    }
-
-    public double getDropOffLatitude() {
-        return dropOffLatitude;
-    }
-
-    public void setDropOffLatitude(double dropOffLatitude) {
-        this.dropOffLatitude = dropOffLatitude;
-    }
-
-    public double getDropOffLongitude() {
-        return dropOffLongitude;
-    }
-
-    public void setDropOffLongitude(double dropOffLongitude) {
-        this.dropOffLongitude = dropOffLongitude;
+    public void setDropOffAddress(String dropOffAddress) {
+        this.dropOffAddress = dropOffAddress;
     }
 
     public String getRecipient() {
@@ -67,5 +45,4 @@ public class PackageRequestDTO {
     public void setRecipientEmail(String recipientEmail) {
         this.recipientEmail = recipientEmail;
     }
-
 }

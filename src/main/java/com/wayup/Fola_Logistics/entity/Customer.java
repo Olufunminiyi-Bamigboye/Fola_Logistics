@@ -13,14 +13,15 @@ public class Customer extends User {
     private double latitude;
     private double longitude;
 
-    public Customer(String name, String email, String phoneNo, Role role) {
+    public Customer(String name, String email, String phoneNo, Role role, double latitude, double longitude) {
         super(name, email, phoneNo, role);
+        this.latitude = latitude;
+        this.longitude = longitude;
     }
 
     public Customer() {
         super();
     }
-
 
     public double getLatitude() {
         return latitude;
