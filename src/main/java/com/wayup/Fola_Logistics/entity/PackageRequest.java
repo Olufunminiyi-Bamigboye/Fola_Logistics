@@ -29,6 +29,7 @@ public class PackageRequest {
     private String recipient;
     private String recipientEmail;
     private String pin;
+    private double price;
 
     @Enumerated(EnumType.STRING)
     private Status status;
@@ -42,6 +43,7 @@ public class PackageRequest {
         this.dropOffLatitude = dropOffLatitude;
         this.dropOffLongitude = dropOffLongitude;
         this.pin = pin;
+        this.price = price;
         this.status = status;
 
     }
@@ -140,6 +142,14 @@ public class PackageRequest {
 
     public void setRecipientEmail(String recipientEmail) {
         this.recipientEmail = recipientEmail;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
     }
 
     @Override

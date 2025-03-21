@@ -3,6 +3,7 @@ package com.wayup.Fola_Logistics.service.impl;
 import com.wayup.Fola_Logistics.dto.request.PackageRequestDTO;
 import com.wayup.Fola_Logistics.dto.request.UserRegistrationRequestDTO;
 import com.wayup.Fola_Logistics.dto.response.ApiResponse;
+import com.wayup.Fola_Logistics.dto.response.GeocodeResponse;
 import com.wayup.Fola_Logistics.entity.Customer;
 import com.wayup.Fola_Logistics.entity.PackageRequest;
 import com.wayup.Fola_Logistics.exception.ExistingEmailException;
@@ -10,6 +11,7 @@ import com.wayup.Fola_Logistics.exception.InvalidRequestException;
 import com.wayup.Fola_Logistics.exception.UserNotFoundException;
 import com.wayup.Fola_Logistics.repository.CustomerRepository;
 import com.wayup.Fola_Logistics.repository.PackageRequestRepository;
+import com.wayup.Fola_Logistics.service.BillingService;
 import com.wayup.Fola_Logistics.service.CustomerService;
 import com.wayup.Fola_Logistics.service.GeocodeService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,6 +31,9 @@ public class CustomerServiceImpl implements CustomerService {
 
     @Autowired
     private GeocodeService geocodeService;
+
+    @Autowired
+    private BillingService billingService;
 
     @Override
     public ApiResponse registerCustomer(UserRegistrationRequestDTO userRegistrationRequestDTO) throws ExistingEmailException {
@@ -61,9 +66,11 @@ public class CustomerServiceImpl implements CustomerService {
         request.setRecipient(packageRequestDTO.getRecipient());
         request.setRecipientEmail(packageRequestDTO.getRecipientEmail());
         request.setPin(generatePin());
+        request.setPrice(billingService.calculateCharges(packageRequestDTO.getPickUpAddress(), packageRequestDTO.getDropOffAddress()));
         request.setStatus(PackageRequest.Status.REQUESTED);
 
         packageRequestRepository.save(request);
+
 
         return new ApiResponse(false, "Package request successfully created! Waiting for a rider to pick", request);
     }

@@ -23,7 +23,7 @@ public class GeocodeService {
     @Value("${google.geocoding.base.url}")
     private String geocodingBaseUrl;
 
-    @Value("AIzaSyDBMowuwodPupUfwSPWQYHK7KBZvHZGntk")
+    @Value ("${google.api.key}")
     private String apiKey;
 
     public GeocodeResponse getGeocodeAddress(String address) {
