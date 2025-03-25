@@ -2,6 +2,7 @@ package com.wayup.Fola_Logistics.advice;
 
 import com.wayup.Fola_Logistics.dto.response.ErrorDetail;
 import com.wayup.Fola_Logistics.exception.ExistingEmailException;
+import com.wayup.Fola_Logistics.exception.InvalidAmountException;
 import com.wayup.Fola_Logistics.exception.InvalidRequestException;
 import com.wayup.Fola_Logistics.exception.UserNotFoundException;
 import org.springframework.http.HttpStatus;
@@ -32,6 +33,14 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(ExistingEmailException.class)
     public ResponseEntity<ErrorDetail> handleInvalidUserException(ExistingEmailException ex, WebRequest request){
+        ErrorDetail errorDetail = new ErrorDetail(ex.getMessage(), LocalDateTime.now(), request.getDescription(false));
+
+        return new ResponseEntity<>(errorDetail, HttpStatus.IM_USED);
+
+    }
+
+    @ExceptionHandler(InvalidAmountException.class)
+    public ResponseEntity<ErrorDetail> handleInvalidAmount(ExistingEmailException ex, WebRequest request){
         ErrorDetail errorDetail = new ErrorDetail(ex.getMessage(), LocalDateTime.now(), request.getDescription(false));
 
         return new ResponseEntity<>(errorDetail, HttpStatus.IM_USED);

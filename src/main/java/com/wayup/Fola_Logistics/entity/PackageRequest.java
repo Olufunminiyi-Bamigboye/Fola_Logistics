@@ -1,8 +1,8 @@
 package com.wayup.Fola_Logistics.entity;
 
 import jakarta.persistence.*;
-import lombok.Data;
 
+import java.util.List;
 import java.util.Objects;
 
 
@@ -14,12 +14,17 @@ public class PackageRequest {
     private Long id;
 
     @ManyToOne
-    @JoinColumn(name = "customer_id", nullable = true)
+    @JoinColumn(name = "customer_id", nullable = false)
     private Customer customer;
 
     @ManyToOne
     @JoinColumn(name = "rider_id", nullable = true)
     private Rider rider;
+
+    @OneToOne(fetch = FetchType.LAZY,
+    cascade = CascadeType.ALL,
+    mappedBy = "packageRequest")
+    private Transaction transaction;
 
     private String itemName;
     private double pickUpLatitude;
@@ -34,18 +39,20 @@ public class PackageRequest {
     @Enumerated(EnumType.STRING)
     private Status status;
 
-    public PackageRequest(Customer customer, Rider rider, String itemName, double pickUpLatitude, double pickUpLongitude, double dropOffLatitude, double dropOffLongitude, Status status) {
+    public PackageRequest(Customer customer, Rider rider, Transaction transaction, String itemName, double pickUpLatitude, double pickUpLongitude, double dropOffLatitude, double dropOffLongitude, String recipient, String recipientEmail, String pin, double price, Status status) {
         this.customer = customer;
         this.rider = rider;
+        this.transaction = transaction;
         this.itemName = itemName;
         this.pickUpLatitude = pickUpLatitude;
         this.pickUpLongitude = pickUpLongitude;
         this.dropOffLatitude = dropOffLatitude;
         this.dropOffLongitude = dropOffLongitude;
+        this.recipient = recipient;
+        this.recipientEmail = recipientEmail;
         this.pin = pin;
         this.price = price;
         this.status = status;
-
     }
 
     public PackageRequest() {
@@ -70,6 +77,17 @@ public class PackageRequest {
 
     public void setRider(Rider rider) {
         this.rider = rider;
+    }
+
+    public Transaction getTransaction() {
+        return transaction;
+    }
+
+    public void setTransaction(Transaction transaction) {
+        this.transaction = transaction;
+        if (transaction != null){
+            transaction.setPackageRequest(this);
+        }
     }
 
     public String getItemName() {
@@ -120,12 +138,14 @@ public class PackageRequest {
         return pin;
     }
 
-    public void setPin(String pin) {
+    public PackageRequest setPin(String pin) {
         this.pin = pin;
+        return null;
     }
 
-    public void setStatus(Status status) {
+    public PackageRequest setStatus(Status status) {
         this.status = status;
+        return null;
     }
 
     public String getRecipient() {
@@ -150,6 +170,11 @@ public class PackageRequest {
 
     public void setPrice(double price) {
         this.price = price;
+    }
+
+    public void addTransaction(Transaction transaction) {
+        this.transaction = transaction;
+        transaction.setPackageRequest(this);
     }
 
     @Override

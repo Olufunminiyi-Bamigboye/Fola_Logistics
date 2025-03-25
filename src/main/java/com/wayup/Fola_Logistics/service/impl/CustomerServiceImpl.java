@@ -65,9 +65,7 @@ public class CustomerServiceImpl implements CustomerService {
         request.setDropOffLatitude(geocodeService.getGeocodeAddress(packageRequestDTO.getDropOffAddress()).getLongitude());
         request.setRecipient(packageRequestDTO.getRecipient());
         request.setRecipientEmail(packageRequestDTO.getRecipientEmail());
-        request.setPin(generatePin());
         request.setPrice(billingService.calculateCharges(packageRequestDTO.getPickUpAddress(), packageRequestDTO.getDropOffAddress()));
-        request.setStatus(PackageRequest.Status.REQUESTED);
 
         packageRequestRepository.save(request);
 
@@ -98,9 +96,5 @@ public class CustomerServiceImpl implements CustomerService {
     }
 
 
-    public static String generatePin(){
-        Random random = new Random();
-        String confirmationPin = String.format("%04d", random.nextInt(10000));
-        return confirmationPin;
-    }
+
 }

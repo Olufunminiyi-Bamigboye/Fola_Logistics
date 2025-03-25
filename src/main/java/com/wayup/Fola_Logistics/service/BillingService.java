@@ -15,14 +15,17 @@ public class BillingService {
     private LocationService locationService;
 
     public Double calculateCharges(String origin, String destination) {
+        double BASE_PRICE_PER_KM = 2.25;
+
         GeocodeResponse originCoordinates = geocodeService.getGeocodeAddress(origin);
         GeocodeResponse destinationCoordinates = geocodeService.getGeocodeAddress(destination);
 
         double distanceInKm = locationService.calculateDistanceInKm(originCoordinates, destinationCoordinates);
 
-        double calculatedPrice = distanceInKm * 1.25;
+        double calculatedPrice = distanceInKm * BASE_PRICE_PER_KM;
         String formattedPrice = String.format("%.2f", calculatedPrice);
 
         return Double.valueOf(formattedPrice);
     }
+
 }
