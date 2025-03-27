@@ -210,4 +210,18 @@ public class PackageRequest {
     public enum Status {
         REQUESTED, PICKED_UP, DELIVERED, CANCELLED
     }
+
+
+    public static class Request {
+        private double latitude;
+        private double longitude;
+
+        public void setLatitude(double latitude) {
+            this.latitude = latitude;
+        }
+
+        public void setLongitude(double longitude) {
+            this.longitude = longitude;
+        }
+    }
 }

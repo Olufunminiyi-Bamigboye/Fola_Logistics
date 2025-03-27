@@ -10,7 +10,6 @@ import com.wayup.Fola_Logistics.exception.InvalidRequestException;
 import com.wayup.Fola_Logistics.exception.UserNotFoundException;
 import com.wayup.Fola_Logistics.repository.PackageRequestRepository;
 import com.wayup.Fola_Logistics.repository.RiderRepository;
-import com.wayup.Fola_Logistics.service.GeocodeService;
 import com.wayup.Fola_Logistics.service.LocationService;
 import com.wayup.Fola_Logistics.service.NotificationService;
 import com.wayup.Fola_Logistics.service.RiderService;

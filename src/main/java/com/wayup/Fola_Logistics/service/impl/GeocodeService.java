@@ -1,17 +1,12 @@
-package com.wayup.Fola_Logistics.service;
+package com.wayup.Fola_Logistics.service.impl;
 
-import com.fasterxml.jackson.databind.ObjectReader;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import com.wayup.Fola_Logistics.dto.response.GeocodeResponse;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.*;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
-import org.springframework.web.util.UriComponentsBuilder;
-
-import java.net.URI;
 
 
 @Service
@@ -27,7 +22,6 @@ public class GeocodeService {
     private String apiKey;
 
     public GeocodeResponse getGeocodeAddress(String address) {
-
         try {
             String requestUrl = geocodingBaseUrl + "?address=" + address.replace(" ",  "+") + "&key=" + apiKey;
 

@@ -11,14 +11,11 @@ import com.wayup.Fola_Logistics.exception.InvalidRequestException;
 import com.wayup.Fola_Logistics.exception.UserNotFoundException;
 import com.wayup.Fola_Logistics.repository.CustomerRepository;
 import com.wayup.Fola_Logistics.repository.PackageRequestRepository;
-import com.wayup.Fola_Logistics.service.BillingService;
 import com.wayup.Fola_Logistics.service.CustomerService;
-import com.wayup.Fola_Logistics.service.GeocodeService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import java.util.Optional;
-import java.util.Random;
 
 
 @Service
@@ -56,20 +53,21 @@ public class CustomerServiceImpl implements CustomerService {
     public ApiResponse createPackageRequest(Long customerId, PackageRequestDTO packageRequestDTO) throws UserNotFoundException {
         Customer customer = customerRepository.findById(customerId).orElseThrow(() -> new UserNotFoundException("Customer not found"));
 
+        GeocodeResponse pickUpGeocode = geocodeService.getGeocodeAddress(packageRequestDTO.getPickUpAddress());
+        GeocodeResponse dropOffGeocode = geocodeService.getGeocodeAddress(packageRequestDTO.getDropOffAddress());
+
         PackageRequest request = new PackageRequest();
         request.setCustomer(customer);
         request.setItemName(packageRequestDTO.getItemName());
-        request.setPickUpLatitude(geocodeService.getGeocodeAddress(packageRequestDTO.getPickUpAddress()).getLatitude());
-        request.setPickUpLongitude(geocodeService.getGeocodeAddress(packageRequestDTO.getPickUpAddress()).getLongitude());
-        request.setDropOffLatitude(geocodeService.getGeocodeAddress(packageRequestDTO.getDropOffAddress()).getLatitude());
-        request.setDropOffLatitude(geocodeService.getGeocodeAddress(packageRequestDTO.getDropOffAddress()).getLongitude());
+        request.setPickUpLatitude(pickUpGeocode.getLatitude());
+        request.setPickUpLongitude(pickUpGeocode.getLongitude());
+        request.setDropOffLatitude(dropOffGeocode.getLatitude());
+        request.setDropOffLongitude(dropOffGeocode.getLongitude());
         request.setRecipient(packageRequestDTO.getRecipient());
         request.setRecipientEmail(packageRequestDTO.getRecipientEmail());
         request.setPrice(billingService.calculateCharges(packageRequestDTO.getPickUpAddress(), packageRequestDTO.getDropOffAddress()));
 
         packageRequestRepository.save(request);
-
-
         return new ApiResponse(false, "Package request successfully created! Waiting for a rider to pick", request);
     }
 

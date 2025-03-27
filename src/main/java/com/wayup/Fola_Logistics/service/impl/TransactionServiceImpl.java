@@ -3,11 +3,9 @@ package com.wayup.Fola_Logistics.service.impl;
 import com.wayup.Fola_Logistics.dto.request.TransactionRequest;
 import com.wayup.Fola_Logistics.dto.response.ApiResponse;
 import com.wayup.Fola_Logistics.dto.response.TransactionResponse;
-import com.wayup.Fola_Logistics.entity.Customer;
 import com.wayup.Fola_Logistics.entity.PackageRequest;
 import com.wayup.Fola_Logistics.entity.Transaction;
 import com.wayup.Fola_Logistics.exception.InvalidAmountException;
-import com.wayup.Fola_Logistics.exception.UserNotFoundException;
 import com.wayup.Fola_Logistics.repository.PackageRequestRepository;
 import com.wayup.Fola_Logistics.repository.TransactionRepository;
 import com.wayup.Fola_Logistics.service.TransactionService;
@@ -19,6 +17,9 @@ import java.util.Random;
 
 @Service
 public class TransactionServiceImpl implements TransactionService {
+    private static final String ALPHA_CHAR = "Ref";
+
+
     @Autowired
     private TransactionRepository transactionRepository;
 
@@ -31,7 +32,7 @@ public class TransactionServiceImpl implements TransactionService {
 
         if (transactionRequest.getAmountPaid() == request.getPrice()) {
             Transaction transaction = new Transaction();
-            transaction.setTransactionRef("R" + 1000 + (int) (Math.random() * 8999));
+            transaction.setTransactionRef(generateReferenceNumber());
             transaction.setAmountPaid(transactionRequest.getAmountPaid());
             transaction.setAmountReceived(calculateDiscount(transactionRequest.getAmountPaid()));
             transaction.setTransactionDate(LocalDateTime.now());
@@ -71,5 +72,14 @@ public class TransactionServiceImpl implements TransactionService {
         double amountReceived = amount - discount;
         String convertedAmount = String.format("%.2f", amountReceived);
         return Double.valueOf(convertedAmount);
+    }
+
+    public static String generateReferenceNumber() {
+        Random random = new Random();
+        StringBuilder referenceNumber = new StringBuilder(16);
+        for (int i = 0; i < 15; i++) {
+            referenceNumber.append(random.nextInt(10));
+        }
+        return ALPHA_CHAR + referenceNumber;
     }
 }
